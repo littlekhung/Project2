@@ -1,5 +1,5 @@
 # Project2
-This is my Second java Project. The purpose is to make a program (Using console),runing on "LMSRunner.java", which illustrate elearning System.
+This is my Second java Project. The purpose is to make a program (Using console),runing on "LMSRunner.java", which illustrate a	simple	learning	management system.
 There are two type of users which is administator and student.
 Administrator:
 - Add/Update/Delete Instructor
