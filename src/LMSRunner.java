@@ -1,3 +1,4 @@
+import java.util.*;
 /** LMSRunner.java - Start building ICT-LMS system 
  * Name: 
  * StudentID:
@@ -31,6 +32,15 @@ public class LMSRunner {
 	//CODE HERE
 	
 	public static void main(String[] args) {
+		Scanner a = new Scanner(System.in);
+		ArrayList<Integer> c = new ArrayList<Integer>();
+		
+		for(int i=0;i<5;i++){
+			c.add(a.nextInt());
+		}
+		for(Integer i : c){
+			System.out.println(i);
+		}
 		
 		//CODE HERE
 		

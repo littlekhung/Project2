@@ -43,7 +43,7 @@ public class Student extends Person {
 	//Method for students to register course
 	public void RegisterCourse(RegCourse a){
 		//CODE HERE
-		this.registeredCourses.add(a);
+		this.registeredCourses.add(a.clone()); // add deepclone of a to arraylist
 	}
 	
 	//Method for student to add RAW scores on particular course code 
@@ -155,7 +155,7 @@ public class Student extends Person {
 	}
 	
 	// Method for checking and printing course that students may have problems
-	// The severe subject is calculated byÂ accumulate score < half of a current full score
+	// The severe subject is calculated by accumulate score < half of a current full score
 	// E.g., Assume that  the Object-Oriented programming has grading criteria as attendance=10%, quiz=10%, project=20%, midterm=30%, final=30% 
 	// Currently your score is attendance=50/100, quiz=4/10, project=45/100, midterm 48/100, finalexam = 0/100 (haven't done final exam) .
 	// The accumulate score = (50*10)/100 + (4*10)/10 + (45*20)/100 + (48*30)/100 + 0 
@@ -169,7 +169,7 @@ public class Student extends Person {
 			if(i.isCompletedCourse()){
 				continue;
 			}
-			double hocfs=0; //haft of current full score
+			double hocfs=0; //half of current full score
 			double curScore=0;
 			curScore=i.getAttendance()+i.getQuiz()+i.getProjects()+i.getMidScore();
 			hocfs=i.getFull_score_attendance()+i.getFull_score_quiz()+i.getFull_score_projects()+i.getFull_score_midScore();
