@@ -85,7 +85,7 @@ public class TestCase {
 
 		//Show accummulate GPA
 		System.out.print("\n[Accummulate GPA] : ");
-		System.out.println(peter.accumGPA());
+		System.out.println(sarah.accumGPA());
 		
 		//Show subject that a student may have problems
 		sarah.severeSubject();

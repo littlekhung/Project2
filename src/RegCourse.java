@@ -1,3 +1,4 @@
+
 /** Name: 
  * StudentID:
  * Section:
@@ -14,7 +15,9 @@
  * are provided below.
  * */
 public class RegCourse extends Course {
-	
+	/**
+	 * I change these variable to double because i want RegCourse to store many student score
+	 */
 	private double quiz;
 	private double attendance;
 	private double projects;
@@ -89,5 +92,16 @@ public class RegCourse extends Course {
 	public void printCourseInfo(){
 		//CODE HERE
 	}
+	/**
+	 * overide deepclone for score storage for each student
+	 */
+	@Override
+	protected RegCourse clone(){
+		RegCourse clone = new RegCourse(this.getCourseCode(),this.getCourseName(),this.isCoreCourse(),this.getCourseCredit());
+		clone.setFullScore(this.getFull_score_attendance(),this.getFull_score_quiz(), this.getFull_score_projects(), this.getFull_score_midScore(), this.getFull_score_finalScore());
+		clone.setCourseGrading(this.getAttendancePercent(), this.getQuizPercent(), this.getProjPercent(), this.getMidtermPercent(), this.getFinalPercent());
+		return clone;
+	}
+	
 	
 }
