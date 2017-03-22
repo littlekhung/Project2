@@ -57,7 +57,7 @@ public class TestCase {
 		//Set raw score for each subjects
 		peter.setAllScore("ITCS208", 100, 12, 75, 45, 60);
 		peter.setAllScore("ITCS200", 100, 15, 80, 50, 75);
-		peter.setAllScore("ITCS211", 40, 0, 0, 10, 0);
+		peter.setAllScore("ITCS211", 40, 0, 0, 10, -1);
 
 		System.out.print("\n[Accummulate GPA] : ");
 		System.out.println(peter.accumGPA());
@@ -80,12 +80,12 @@ public class TestCase {
 		//Set RAW score for each subjects
 		sarah.setAllScore("ITCS200", 100, 17, 85, 63, 60);
 		sarah.setAllScore("ITCS208", 100, 18, 82, 60, 72);
-		sarah.setAllScore("ITCS211", 100, 0, 0, 25, 0);
-		sarah.setAllScore("ITLG201", 100, 0, 30, 23, 0);
+		sarah.setAllScore("ITCS211", 100, 0, 0, 25, -1);
+		sarah.setAllScore("ITLG201", 100, 0, 30, 23, -1);
 
 		//Show accummulate GPA
 		System.out.print("\n[Accummulate GPA] : ");
-		System.out.println(peter.accumGPA());
+		System.out.println(sarah.accumGPA());
 		
 		//Show subject that a student may have problems
 		sarah.severeSubject();

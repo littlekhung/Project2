@@ -27,7 +27,11 @@ public class Student extends Person {
 		this.subjectInterest = new ArrayList<String>();
 		this.registeredCourses = new ArrayList<RegCourse>();
 	}
-
+	//getter for registeredCourses used in LMSRunner
+	public ArrayList<RegCourse> getRegisteredCourses() {
+		return registeredCourses;
+	}
+	
 	//Printing Students basic information @Overriding
 	public void printInfo(){
 		//CODE HERE
@@ -39,11 +43,18 @@ public class Student extends Person {
 			}
 		}
 	}
-	
+
 	//Method for students to register course
 	public void RegisterCourse(RegCourse a){
 		//CODE HERE
 		this.registeredCourses.add(a);
+		a.enrollStudent(this);
+	}
+	
+	//Method for removing student from a course
+	public void removeFromCourse(RegCourse a){
+		this.registeredCourses.remove(a);
+		a.removeStudent(this);
 	}
 	
 	//Method for student to add RAW scores on particular course code 
@@ -51,18 +62,16 @@ public class Student extends Person {
 		//CODE HERE
 		for(RegCourse i : this.registeredCourses){
 			if(i.getCourseCode().equals(cCode)){
-				i.setAttendance(attScore);
-				i.setQuiz(quiScore);
-				i.setProjects(proScore);
-				i.setMidScore(miScore);
-				i.setFinalScore(fiScore);
-				if(i.getFinalScore()==0 && i.getFull_score_finalScore()!=0){
-					i.setCompletedCourse(false);
+				for(RegCourse j : i.getStudentScore()){
+					if(j.getScoreOwner().getFirstName().equals(this.getFirstName()) && j.getScoreOwner().getLastName().equals(this.getLastName())){
+						j.setAttendance(attScore);
+						j.setQuiz(quiScore);
+						j.setProjects(proScore);
+						j.setMidScore(miScore);
+						j.setFinalScore(fiScore);
+						return;
+					}
 				}
-				else{
-					i.setCompletedCourse(true);
-				}
-				break;
 			}
 		}
 		
@@ -70,32 +79,31 @@ public class Student extends Person {
 	
 	//Method for converting accumulate score to an alphabet GRADE (e.g., A, B, C, D, F)
 	// A=4.0, B=3.0, C=2.0, D=1.0, F=0.0
-	public char Grading(RegCourse a){
+	public char Grading(RegCourse b){
+		RegCourse a=null;
 		double tot;
 		double att=0,qui=0,pro=0,mi=0,fi=0;
+		for(RegCourse i : b.getStudentScore()){
+			if(i.getScoreOwner().getFirstName().equals(this.getFirstName()) && i.getScoreOwner().getLastName().equals(this.getLastName())){
+				a=i;
+				break;
+			}
+		}
 /////////////////////////////////////////Calculation////////////////////////////////////////////////
 		
-		if (a.getFull_score_attendance() != 0)
-			att = (a.getAttendance() / a.getFull_score_attendance()) * a.getAttendancePercent();
-		if (a.getFull_score_quiz() != 0)
-			qui = (a.getQuiz() / a.getFull_score_quiz()) * a.getQuizPercent();
-		if (a.getFull_score_projects() != 0)
-			pro = (a.getProjects() / a.getFull_score_projects()) * a.getProjPercent();
-		if (a.getFull_score_midScore() != 0)
-			mi = (a.getMidScore() / a.getFull_score_midScore()) * a.getMidtermPercent();
-		if (a.getFull_score_finalScore() != 0)
-			fi = (a.getFinalScore() / a.getFull_score_finalScore()) * a.getFinalPercent();
+		if (b.getFull_score_attendance() != 0)
+			att = (a.getAttendance() / b.getFull_score_attendance()) * b.getAttendancePercent();
+		if (b.getFull_score_quiz() != 0)
+			qui = (a.getQuiz() / b.getFull_score_quiz()) * b.getQuizPercent();
+		if (b.getFull_score_projects() != 0)
+			pro = (a.getProjects() / b.getFull_score_projects()) * b.getProjPercent();
+		if (b.getFull_score_midScore() != 0)
+			mi = (a.getMidScore() / b.getFull_score_midScore()) * b.getMidtermPercent();
+		if (b.getFull_score_finalScore() != 0 && a.getFinalScore() != -1)
+			fi = (a.getFinalScore() / b.getFull_score_finalScore()) * b.getFinalPercent();
 		
 /////////////////////////////////////////Assign Score///////////////////////////////////////////////
-		
 		a.setAccumScore(att + qui + pro + mi + fi);
-		if(a.getFinalScore()==0 && a.getFull_score_finalScore()!=0){
-			a.setCompletedCourse(false);
-		}
-		else{
-			a.setCompletedCourse(true);
-		}
-		
 //////////////////////////////////////////Return Part///////////////////////////////////////////////
 		
 		tot = a.getAccumScore();
@@ -128,24 +136,28 @@ public class Student extends Person {
 		double totCredit = 0;
 		double totGain = 0;
 		for(RegCourse i : this.registeredCourses){
-			if(i.isCompletedCourse()){
-				totCredit+=i.getCourseCredit();
-				switch(this.Grading(i)){
-				case 'A':
-					totGain+=4.0*i.getCourseCredit();
-					break;
-				case 'B':
-					totGain+=3.0*i.getCourseCredit();
-					break;
-				case 'C':
-					totGain+=2.0*i.getCourseCredit();
-					break;
-				case 'D':
-					totGain+=1.0*i.getCourseCredit();
-					break;
-				case 'F':
-					totGain+=0.0*i.getCourseCredit();
-					break;
+			for(RegCourse j : i.getStudentScore()){
+				if(j.getScoreOwner().getFirstName().equals(this.getFirstName()) && j.getScoreOwner().getLastName().equals(this.getLastName())){
+					if(j.isCompletedCourse()){
+						totCredit+=i.getCourseCredit();
+						switch(this.Grading(i)){
+						case 'A':
+							totGain+=4.0*i.getCourseCredit();
+							break;
+						case 'B':
+							totGain+=3.0*i.getCourseCredit();
+							break;
+						case 'C':
+							totGain+=2.0*i.getCourseCredit();
+							break;
+						case 'D':
+							totGain+=1.0*i.getCourseCredit();
+							break;
+						case 'F':
+							totGain+=0.0*i.getCourseCredit();
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -155,7 +167,7 @@ public class Student extends Person {
 	}
 	
 	// Method for checking and printing course that students may have problems
-	// The severe subject is calculated byÂ accumulate score < half of a current full score
+	// The severe subject is calculated by accumulate score < half of a current full score
 	// E.g., Assume that  the Object-Oriented programming has grading criteria as attendance=10%, quiz=10%, project=20%, midterm=30%, final=30% 
 	// Currently your score is attendance=50/100, quiz=4/10, project=45/100, midterm 48/100, finalexam = 0/100 (haven't done final exam) .
 	// The accumulate score = (50*10)/100 + (4*10)/10 + (45*20)/100 + (48*30)/100 + 0 
@@ -166,16 +178,20 @@ public class Student extends Person {
 		//CODE HERE
 		ArrayList<RegCourse> ser = new ArrayList<RegCourse>();
 		for(RegCourse i : this.registeredCourses){
-			if(i.isCompletedCourse()){
-				continue;
-			}
-			double hocfs=0; //haft of current full score
-			double curScore=0;
-			curScore=i.getAttendance()+i.getQuiz()+i.getProjects()+i.getMidScore();
-			hocfs=i.getFull_score_attendance()+i.getFull_score_quiz()+i.getFull_score_projects()+i.getFull_score_midScore();
-			hocfs/=2;
-			if(curScore<hocfs){
-				ser.add(i);
+			for(RegCourse j : i.getStudentScore()){
+				if(j.getScoreOwner().getFirstName().equals(this.getFirstName()) && j.getScoreOwner().getLastName().equals(this.getLastName())){
+					if(j.isCompletedCourse()){
+						continue;
+					}
+					double hocfs=0; //half of current full score
+					double curScore=0;
+					curScore=j.getAttendance()+j.getQuiz()+j.getProjects()+j.getMidScore();
+					hocfs=i.getFull_score_attendance()+i.getFull_score_quiz()+i.getFull_score_projects()+i.getFull_score_midScore();
+					hocfs/=2;
+					if(curScore<hocfs){
+						ser.add(i);
+					}
+				}
 			}
 		}
 		if(ser.size()!=0){
@@ -193,20 +209,24 @@ public class Student extends Person {
 		double scoreNeeded=0;
 		for(RegCourse i : this.registeredCourses){
 			if(i.getCourseCode().equals(cCode)){
-				if(i.isCompletedCourse()){
-					System.out.println("Completed Course!!!");
-					return;
+				for(RegCourse j : i.getStudentScore()){
+					if(j.getScoreOwner().getFirstName().equals(this.getFirstName()) && j.getScoreOwner().getLastName().equals(this.getLastName())){
+						if(j.isCompletedCourse()){
+							System.out.println("Completed Course!!!");
+							return;
+						}
+						this.Grading(i);
+						scoreNeeded=80.0-j.getAccumScore();
+						System.out.println("["+i.getCourseCode()+"-"+i.getCourseName()+"]");
+						if(scoreNeeded>i.getFinalPercent()){
+							System.out.println("You can't get A for this subject");
+						}
+						else{
+							System.out.println("You need "+scoreNeeded+" score more to get an A for this subject");
+						}
+						break;
+					}
 				}
-				this.Grading(i);
-				scoreNeeded=80.0-i.getAccumScore();
-				System.out.println("["+i.getCourseCode()+"-"+i.getCourseName()+"]");
-				if(scoreNeeded>i.getFinalPercent()){
-					System.out.println("You can't get A for this subject");
-				}
-				else{
-					System.out.println("You need "+scoreNeeded+" score more to get an A for this subject");
-				}
-				break;
 			}
 		}
 	}
@@ -220,7 +240,7 @@ public class Student extends Person {
 			for(Instructor j : listINS){			//check each instructor
 				for(RegCourse k : j.getTeaching()){	//check each instructor's register courses
 					if(i.getCourseCode().equals(k.getCourseCode())){	
-						for(Instructor l : rel){	//check of the instructor is already in relavant list
+						for(Instructor l : rel){	//check of the instructor is already in relevant list
 							if(j.equals(l)){
 								checkAld = true;
 								break;
