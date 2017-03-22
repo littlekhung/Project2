@@ -36,5 +36,11 @@ public class Instructor extends Person {
 	//Printing Instructor information @Overridding
     public void printInfo(){
     //CODE HERE
+    	if(this.teaching.size()!=0){
+			System.out.println("[Teaching courses]");
+			for(RegCourse i : this.teaching){
+				System.out.println(i.getCourseCode()+" - "+i.getCourseName());
+			}
+		}
     }
 }
