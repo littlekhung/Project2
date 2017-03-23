@@ -37,7 +37,54 @@ public class LMSRunner {
 	private static Scanner a = new Scanner(System.in);
 
 	public static void main(String[] args) {
-		// CODE HERE
+		RegCourse funProgramming = new RegCourse("ITCS200","Fundamentals of Programming", true, 3);
+		funProgramming.setCourseGrading(10, 10, 20, 30, 30);
+		funProgramming.setFullScore(100, 30, 100, 100, 100);
+		RegCourse OOP = new RegCourse("ITCS208","Object-Oriented Programming", true, 3);
+		OOP.setCourseGrading(10, 10, 20, 30, 30);
+		OOP.setFullScore(100, 30, 100, 100, 100);
+		RegCourse digitalSystem = new RegCourse("ITCS211","Introduction to Digital Systems", true, 3);
+		digitalSystem.setCourseGrading(10, 0, 0, 40, 50);
+		digitalSystem.setFullScore(100, 0, 0, 40, 50);
+		RegCourse eng2 = new RegCourse("ITLG201","Reading", true, 1);
+		eng2.setCourseGrading(10, 0, 30, 30, 30);
+		eng2.setFullScore(100, 0, 30, 30, 30);
+
+		ArrayList<Instructor> listINS = new ArrayList<Instructor>();
+		Instructor somchai = new Instructor("Somchai", "Jaidee", 35, 'M');
+		somchai.setTeaching(OOP);
+		somchai.setTeaching(funProgramming);
+		Instructor somsri = new Instructor("Somsri", "Deejai", 29, 'F');
+		somsri.setTeaching(OOP);
+		somsri.setTeaching(digitalSystem);
+		Instructor somjai = new Instructor("Somjai", "Maimee", 28, 'F');
+		somjai.setTeaching(eng2);
+		listINS.add(somchai);
+		listINS.add(somsri);
+		listINS.add(somjai);
+		Student peter = new Student("Peter", "Parker", 21, 'M');
+		peter.RegisterCourse(funProgramming);
+		peter.RegisterCourse(OOP);
+		peter.RegisterCourse(digitalSystem);	
+		peter.setAllScore("ITCS208", 100, 12, 75, 45, 60);
+		peter.setAllScore("ITCS200", 100, 15, 80, 50, 75);
+		peter.setAllScore("ITCS211", 40, 0, 0, 10, -1);
+		Student sarah = new Student("Sarah", "Josh", 20, 'F');
+		sarah.RegisterCourse(funProgramming);
+		sarah.RegisterCourse(OOP);
+		sarah.RegisterCourse(digitalSystem);
+		sarah.RegisterCourse(eng2);
+		sarah.setAllScore("ITCS200", 100, 17, 85, 63, 60);
+		sarah.setAllScore("ITCS208", 100, 18, 82, 60, 72);
+		sarah.setAllScore("ITCS211", 100, 0, 0, 25, -1);
+		sarah.setAllScore("ITLG201", 100, 0, 30, 23, -1);
+		instructorList = listINS;
+		studentList.add(peter);
+		studentList.add(sarah);
+		courseList.add(eng2);
+		courseList.add(digitalSystem);
+		courseList.add(OOP);
+		courseList.add(funProgramming);
 		menu();
 
 	}
@@ -54,7 +101,31 @@ public class LMSRunner {
 				administrator();
 				break;
 			case "2":
-				student();
+				String firstName=null,lastName=null;
+				Student user = null;
+				while(true){
+					System.out.print("\nEnter your firstname: ");
+					firstName = a.next();
+					System.out.print("Enter your lastname: ");
+					lastName = a.next();
+					for(Student i : studentList){
+						if(i.getFirstName().equalsIgnoreCase(firstName) && i.getLastName().equalsIgnoreCase(lastName)){
+							user = i;
+							break;
+						}
+					}
+					if(user != null){
+						break;
+					}
+					System.out.println(firstName+" "+lastName+" is not in the system.");
+					System.out.print("Enter \"y\" if you want to go back to main menu: ");
+					if(a.next().equalsIgnoreCase("y")){
+						break;
+					}
+				}
+				if(user!= null){
+					student(user);
+				}
 				break;
 			case "3":
 				a.close();
@@ -63,10 +134,6 @@ public class LMSRunner {
 				System.out.println("Wrong input please try again");
 			}
 		}
-	}
-
-	private static void student() {
-
 	}
 
 	private static void administrator() {
@@ -138,7 +205,8 @@ public class LMSRunner {
 					System.out.print("\nEnter Course Code: ");
 					code = a.next();
 					System.out.print("Enter Course Name: ");
-					name = a.next();
+					a.nextLine();
+					name = a.nextLine();
 					System.out.print("Is this Course Core(y/n): ");
 					temp = a.next();
 					if (temp.equals("y") || temp.equals("Y")) {
@@ -310,7 +378,8 @@ public class LMSRunner {
 			case "3":
 				System.out.println("Old: " + course.getCourseName());
 				System.out.print("Enter Name: ");
-				in = a.next();
+				a.nextLine();
+				in = a.nextLine();
 				System.out.print("Are you sure? (If yes enter \"y\"): ");
 				temp = a.next();
 				if (temp.equals("y") || temp.equals("Y")) {
@@ -1128,14 +1197,6 @@ public class LMSRunner {
 						System.out.println("Invalid input!!!\nPlease try again");
 						continue;
 					}
-					System.out.print(
-							"Are you sure you want to add this student to " + courseList.get(number).getCourseCode()
-									+ " - " + courseList.get(number).getCourseName() + "(If yes enter \"y\"):");
-					temp = a.next();
-					if (!(temp.equals("y") || temp.equals("Y"))) {
-						System.out.println("Cancel Complete");
-						continue;
-					}
 					boolean already_regis = false;
 					for (RegCourse i : student.getRegisteredCourses()) {
 						if (i.equals(courseList.get(number))) {
@@ -1147,6 +1208,14 @@ public class LMSRunner {
 						System.out.println("student " + student.getFirstName() + " " + student.getLastName()
 								+ " has already registered " + courseList.get(number).getCourseCode() + " - "
 								+ courseList.get(number).getCourseName());
+						continue;
+					}
+					System.out.print(
+							"Are you sure you want to add this student to " + courseList.get(number).getCourseCode()
+									+ " - " + courseList.get(number).getCourseName() + "(If yes enter \"y\"):");
+					temp = a.next();
+					if (!(temp.equals("y") || temp.equals("Y"))) {
+						System.out.println("Cancel Complete");
 						continue;
 					}
 					student.RegisterCourse((courseList.get(number)));
@@ -1434,7 +1503,208 @@ public class LMSRunner {
 	}
 
 	private static void information() {
-
+		while (true) {
+			String temp;
+			int number;
+			System.out.println("\nWhat you want to know?");
+			System.out.println("[1] Instructor");
+			System.out.println("[2] Student");
+			System.out.println("[3] Exit");
+			System.out.print("Input: ");
+			switch (a.next()) {
+			case "1":
+				while (true) {
+					System.out.println("\n[Instructor List]");
+					for (int i = 0; i < instructorList.size(); i++) {
+						System.out.println("[" + (i + 1) + "] " + instructorList.get(i).getFirstName() + " "
+								+ instructorList.get(i).getLastName());
+					}
+					System.out.println("[" + (instructorList.size() + 1) + "] Back");
+					System.out.print("Please enter instructor number you want to view: ");
+					if (a.hasNextInt()) {
+						number = a.nextInt() - 1;
+					} else {
+						System.out.println("Please enter only integer!!!\nPlease try again");
+						a.next();
+						continue;
+					}
+					if (number == instructorList.size()) {
+						break;
+					}
+					if (number >= instructorList.size() || number < 0) {
+						System.out.println("Invalid input!!!\nPlease try again");
+						continue;
+					}
+					System.out.println();
+					instructorList.get(number).printInfo();
+					System.out.print("Do you want to view another instructor?(If yes enter \"y\"): ");
+					temp = a.next();
+					if (temp.equals("y") || temp.equals("Y")) {
+						continue;
+					} else {
+						break;
+					}
+				}
+				break;
+			case "2":
+				while (true) {
+					System.out.println("\n[Student List]");
+					for (int i = 0; i < studentList.size(); i++) {
+						System.out.println("[" + (i + 1) + "] " + studentList.get(i).getFirstName() + " "
+								+ studentList.get(i).getLastName());
+					}
+					System.out.println("[" + (studentList.size() + 1) + "] Back");
+					System.out.print("Please enter student number: ");
+					if (a.hasNextInt()) {
+						number = a.nextInt() - 1;
+					} else {
+						System.out.println("Please enter only integer!!!\nPlease try again");
+						a.next();
+						continue;
+					}
+					if (number == studentList.size()) {
+						break;
+					}
+					if (number >= studentList.size() || number < 0) {
+						System.out.println("Invalid input!!!\nPlease try again");
+						continue;
+					}
+					System.out.println();
+					studentList.get(number).printInfo();
+					System.out.print("Do you want to view another student?(If yes enter \"y\"): ");
+					temp = a.next();
+					if (temp.equals("y") || temp.equals("Y")) {
+						continue;
+					} else {
+						break;
+					}
+				}
+				break;
+			case "3":
+				return;
+			default:
+				System.out.println("Wrong input please try again");
+			}
+		}
 	}
-
+	
+	private static void student(Student student) {
+		while (true) {
+			String temp;
+			int number;
+			System.out.println("\n[Student("+student.getFirstName()+" "+student.getLastName()+")]");
+			System.out.println("[1] Register To a Course");
+			System.out.println("[2] View Accumulate GPA");
+			System.out.println("[3] How Many Score Need To Get A");
+			System.out.println("[4] View Severe Subject");
+			System.out.println("[5] Search Instructor Name");
+			System.out.println("[6] Back");
+			System.out.print("Input: ");
+			switch (a.next()) {
+			case "1":
+				while (true) {
+					System.out.println("\n[Course List]");
+					for (int i = 0; i < courseList.size(); i++) {
+						System.out.println("[" + (i + 1) + "] " + courseList.get(i).getCourseCode() + " - "
+								+ courseList.get(i).getCourseName());
+					}
+					System.out.println("[" + (courseList.size() + 1) + "] Back");
+					System.out.print("Please enter course number you want to register: ");
+					if (a.hasNextInt()) {
+						number = a.nextInt() - 1;
+					} else {
+						System.out.println("Please enter only integer!!!\nPlease try again");
+						a.next();
+						continue;
+					}
+					if (number == courseList.size()) {
+						break;
+					}
+					if (number >= courseList.size() || number < 0) {
+						System.out.println("Invalid input!!!\nPlease try again");
+						continue;
+					}
+					boolean already_regis = false;
+					for (RegCourse i : student.getRegisteredCourses()) {
+						if (i.equals(courseList.get(number))) {
+							already_regis = true;
+							continue;
+						}
+					}
+					if (already_regis) {
+						System.out.println("student " + student.getFirstName() + " " + student.getLastName()
+								+ " has already registered " + courseList.get(number).getCourseCode() + " - "
+								+ courseList.get(number).getCourseName());
+						continue;
+					}
+					System.out.print(
+							"Are you sure you want to register to " + courseList.get(number).getCourseCode()
+									+ " - " + courseList.get(number).getCourseName() + "(If yes enter \"y\"):");
+					temp = a.next();
+					if (!(temp.equals("y") || temp.equals("Y"))) {
+						System.out.println("Cancel Complete");
+						continue;
+					}
+					student.RegisterCourse((courseList.get(number)));
+					System.out.println("Add Complete");
+					System.out.print("Do you want to add this student to another course?(If yes enter \"y\"): ");
+					temp = a.next();
+					if (temp.equals("y") || temp.equals("Y")) {
+						continue;
+					} else {
+						break;
+					}
+				}
+				break;
+			case "2":
+				System.out.println("\nYour GPA is: "+student.accumGPA());
+				break;
+			case "3":
+				while (true) {
+					System.out.println("\n[Registered Course List]");
+					for (int i = 0; i < student.getRegisteredCourses().size(); i++) {
+						System.out.println("[" + (i + 1) + "] " + student.getRegisteredCourses().get(i).getCourseCode()
+								+ " - " + student.getRegisteredCourses().get(i).getCourseName());
+					}
+					System.out.println("[" + (student.getRegisteredCourses().size() + 1) + "] Back");
+					System.out.print("Please enter course number you want to view: ");
+					if (a.hasNextInt()) {
+						number = a.nextInt() - 1;
+					} else {
+						System.out.println("Please enter only integer!!!\nPlease try again");
+						a.next();
+						continue;
+					}
+					if (number == student.getRegisteredCourses().size()) {
+						break;
+					}
+					if (number >= student.getRegisteredCourses().size() || number < 0) {
+						System.out.println("Invalid input!!!\nPlease try again");
+						continue;
+					}
+					student.howToGetASubject(courseList.get(number).getCourseCode());
+					System.out.print("Do you want to view another course?(If yes enter \"y\"): ");
+					temp = a.next();
+					if (temp.equals("y") || temp.equals("Y")) {
+						continue;
+					} else {
+						break;
+					}
+				}
+				break;
+			case "4":
+				System.out.println();
+				student.severeSubject();
+				break;
+			case "5":
+				System.out.println();
+				student.relevantInstructor(instructorList);
+				break;
+			case "6":
+				return;
+			default:
+				System.out.println("Wrong input please try again");
+			}
+		}
+	}
 }
