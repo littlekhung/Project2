@@ -131,7 +131,8 @@ public class RegCourse extends Course {
 	}
 	//Printing Course Information 
 	public void printCourseInfo(){
-		//CODE HERE
+		//dosen't use any way?
+		
 	}
 	
 }
